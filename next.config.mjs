@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+	serverRuntimeConfig: {
+		mediaPath: "./public/attachments"
+	}
+};
 
 export default nextConfig;

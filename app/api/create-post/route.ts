@@ -4,9 +4,14 @@ import { pipeline } from "stream";
 import { promisify } from "util";
 import { zfd } from "zod-form-data";
 import { fileTypeFromFile } from 'file-type';
-
+import getConfig from "next/config";
 
 import db from "../../db"
+
+import { AttachmentType } from "@/types.d";
+
+const { serverRuntimeConfig } = getConfig()
+const { mediaPath } = serverRuntimeConfig
 
 const pump = promisify(pipeline)
 const schema = zfd.formData({
@@ -22,24 +27,46 @@ function hashFile(path: string) {
 	return sum.digest("hex")
 }
 
-enum AttachmentType {
-	Image = 0,
-	Video,
-	Audio
+function parseMimeType(mimeType: string): AttachmentType | null {
+	const firstPart = mimeType.split("/")[0]
+
+	switch (firstPart) {
+		case 'image':
+			return AttachmentType.Image;
+		case 'video':
+			return AttachmentType.Video;
+		case 'audio':
+			return AttachmentType.Audio;
+		default:
+			return null;
+	}
 }
 
 // TODO: samaan endpoittiin tulee myös vastaukset joten myös niitä pitää tukea (parenting ja konditionaalinen attachment vaatimus)
 export async function POST(req: NextRequest) {
 	const { file, board, content } = schema.parse(await req.formData())
 
-	const fp = `/tmp/${file.name}`;
-	await pump(file.stream(), fs.createWriteStream(fp));
+	const tmpFile = `/tmp/${file.name}`;
+	await pump(file.stream(), fs.createWriteStream(tmpFile));
 
-	const fileHash = hashFile(fp)
-	const fileType = await fileTypeFromFile(fp)
+	const fileHash = hashFile(tmpFile)
+	const fileType = await fileTypeFromFile(tmpFile)
 
-	// TODO: checkkaa onko tiedostoa samalla hashilla levyllä ja jos ei niin siirrä lopulliseen storageen, muuten poista
-	// TODO: checkkaa jos fileType.mime !== [image|video|audio] niin error
+	const attachmentType = parseMimeType(fileType.mime)
+	if (attachmentType === null)
+		return NextResponse.error()
+
+	// TODO: on post deletion, only delete attachment if there isn't other posts linked to it
+	const fileName = `${fileHash}.${fileType.ext}`
+	const permanentFile = `${mediaPath}/${fileName}`
+	if (fs.existsSync(permanentFile)) {
+		fs.unlinkSync(tmpFile)
+	} else {
+		if (!fs.existsSync(mediaPath)) {
+			fs.mkdirSync(mediaPath)
+		}
+		fs.renameSync(tmpFile, permanentFile)
+	}
 
 	const post = await db.post.create({
 		data: {
@@ -52,19 +79,15 @@ export async function POST(req: NextRequest) {
 				create: {
 					type: {
 						connect: {
-							// TODO: parsi mimetype ja palauta numero AttachmentType perusteella
-							id: 0
+							id: attachmentType
 						}
 					},
-					hash: fileHash,
-					ext: fileType.ext,
+					name: fileName
 				}
 			},
 			content
 		}
 	})
 
-	console.log("post:", post)
-
-	return NextResponse.redirect("localhost:3000/")
+	return NextResponse.redirect(`http://localhost:3000/${board}/${post.id}`, 303)
 }

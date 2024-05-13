@@ -22,8 +22,7 @@ model AttachmentType {
 
 model Attachment {
     id               Int            @id @default(autoincrement())
-    hash             String
-    ext              String
+    name             String
     type             AttachmentType @relation(fields: [attachmentTypeId], references: [id])
     attachmentTypeId Int
     Post             Post[]
