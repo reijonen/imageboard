@@ -15,6 +15,9 @@ const getBoard = cache(async (board: string) => {
 			name: true,
 			shorthand: true,
 			posts: {
+				where: {
+					parentId: null
+				},
 				include: {
 					attachment: {
 						select: {

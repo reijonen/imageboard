@@ -1,7 +1,7 @@
 import Attachment from "./Attachment"
 import { PostProps } from "@/types.d"
 
-const Post = ({ id, createdAt, content, attachment }: PostProps) => {
+const Thread = ({ id, createdAt, content, attachment, replies }: PostProps) => {
 	return (
 		<div>
 			<div>
@@ -14,8 +14,18 @@ const Post = ({ id, createdAt, content, attachment }: PostProps) => {
 			<div>
 				<Attachment {...attachment} />
 			</div>
+			<div>
+				{replies.map((reply) => (
+					<div>
+						{reply.attachment ? <Attachment {...reply.attachment} /> : null}
+						<p>{reply.id}</p>
+						<p>{reply.createdAt.toDateString()}</p>
+						<p>{reply.content}</p>
+					</div>
+				))}
+			</div>
 		</div>
 	)
 }
 
-export default Post
+export default Thread

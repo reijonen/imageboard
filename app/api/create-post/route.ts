@@ -3,48 +3,28 @@ import fs from "fs"
 import { pipeline } from "stream";
 import { promisify } from "util";
 import { zfd } from "zod-form-data";
+import { z } from "zod"
 import { fileTypeFromFile } from 'file-type';
 import getConfig from "next/config";
 
 import db from "../../db"
-
-import { AttachmentType } from "@/types.d";
+import parseMimeType from "@/utils/parseMimeType";
+import hashFile from "@/utils/hashFile";
 
 const { serverRuntimeConfig } = getConfig()
 const { mediaPath } = serverRuntimeConfig
 
 const pump = promisify(pipeline)
 const schema = zfd.formData({
-	file: zfd.file(),
+	file: z.custom<File>(),
 	board: zfd.text(),
 	content: zfd.text(),
+	threadId: zfd.numeric().optional()
 });
 
-import crypto from "crypto"
-function hashFile(path: string) {
-	const sum = crypto.createHash("sha256");
-	sum.update(fs.readFileSync(path));
-	return sum.digest("hex")
-}
-
-function parseMimeType(mimeType: string): AttachmentType | null {
-	const firstPart = mimeType.split("/")[0]
-
-	switch (firstPart) {
-		case 'image':
-			return AttachmentType.Image;
-		case 'video':
-			return AttachmentType.Video;
-		case 'audio':
-			return AttachmentType.Audio;
-		default:
-			return null;
-	}
-}
-
-// TODO: samaan endpoittiin tulee myös vastaukset joten myös niitä pitää tukea (parenting ja konditionaalinen attachment vaatimus)
-export async function POST(req: NextRequest) {
-	const { file, board, content } = schema.parse(await req.formData())
+const handleFile = async (file: File) => {
+	if (file.size === 0)
+		return null;
 
 	const tmpFile = `/tmp/${file.name}`;
 	await pump(file.stream(), fs.createWriteStream(tmpFile));
@@ -53,8 +33,10 @@ export async function POST(req: NextRequest) {
 	const fileType = await fileTypeFromFile(tmpFile)
 
 	const attachmentType = parseMimeType(fileType.mime)
-	if (attachmentType === null)
-		return NextResponse.error()
+	if (attachmentType === null) {
+		fs.unlinkSync(tmpFile)
+		throw new Error("Invalid file type")
+	}
 
 	// TODO: on post deletion, only delete attachment if there isn't other posts linked to it
 	const fileName = `${fileHash}.${fileType.ext}`
@@ -68,6 +50,18 @@ export async function POST(req: NextRequest) {
 		fs.renameSync(tmpFile, permanentFile)
 	}
 
+	return { fileName, attachmentType }
+}
+
+// TODO: samaan endpoittiin tulee myös vastaukset joten myös niitä pitää tukea (parenting ja konditionaalinen attachment vaatimus)
+export async function POST(req: NextRequest) {
+	const { file, board, content, threadId } = schema.parse(await req.formData())
+
+	const attachment = await handleFile(file)
+
+	if (!attachment && !threadId)
+		return NextResponse.error()
+
 	const post = await db.post.create({
 		data: {
 			board: {
@@ -75,19 +69,50 @@ export async function POST(req: NextRequest) {
 					shorthand: board
 				}
 			},
-			attachment: {
-				create: {
-					type: {
-						connect: {
-							id: attachmentType
-						}
-					},
-					name: fileName
+			...(attachment && {
+				attachment: {
+					create: {
+						type: {
+							connect: {
+								id: attachment.attachmentType
+							}
+						},
+						name: attachment.fileName
+					}
+				},
+			}),
+			content,
+			...(threadId && {
+				parent: {
+					connect: {
+						id: threadId
+					}
 				}
-			},
-			content
+			})
 		}
 	})
 
-	return NextResponse.redirect(`http://localhost:3000/${board}/${post.id}`, 303)
+	if (threadId) {
+		await db.post.update({
+			where: {
+				id: threadId
+			},
+			data: {
+				replyCount: {
+					increment: 1
+				},
+				...(attachment && {
+					imageCount: {
+						increment: 1
+					}
+				})
+			}
+		})
+	}
+
+	const redirectId = threadId ? threadId : post.id;
+
+
+	// TODO: relative or change url dev/prod
+	return NextResponse.redirect(`http://localhost:3000/${board}/${redirectId}`, 303)
 }

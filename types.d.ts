@@ -8,7 +8,10 @@ type PostProps = {
 	id: number,
 	createdAt: Date,
 	content: string,
-	attachment: AttachmentProps
+	replyCount: number | null,
+	imageCount: number | null,
+	attachment: AttachmentProps,
+	replies: PostProps[]
 }
 
 type PostPreviewProps = {
@@ -23,6 +26,7 @@ type BoardParams = {
 
 type ThreadParams = {
 	params: {
+		board: string
 		thread: string
 	}
 }
@@ -30,4 +34,9 @@ type ThreadParams = {
 type AttachmentProps = {
 	name: string,
 	attachmentTypeId: number
+}
+
+type PostFormProps = {
+	board: string,
+	threadId: number
 }

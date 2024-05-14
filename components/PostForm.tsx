@@ -1,7 +1,7 @@
 import { PostFormProps } from "@/types.d"
 
-const PostForm = ({ board }: PostFormProps) => (
-	<div className="w-full max-w-xs m-auto">
+const PostForm = ({ board, threadId }: PostFormProps) => (
+	<div className={"w-full max-w-xs m-auto " + (threadId ? "absolute right-0" : "")}>
 		<form
 			method="POST"
 			action="/api/create-post"
@@ -41,6 +41,9 @@ const PostForm = ({ board }: PostFormProps) => (
 				/>
 			</div>
 			<input name="board" value={board} hidden />
+			{threadId ? (
+				<input name="threadId" value={threadId} hidden />
+			) : null}
 			<div className="flex justify-end">
 				<button
 					type="submit"

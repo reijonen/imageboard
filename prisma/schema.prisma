@@ -38,7 +38,9 @@ model Post {
     attachment   Attachment? @relation(fields: [attachmentId], references: [id])
     attachmentId Int?
 
-    content String
+    content    String
+    replyCount Int    @default(0)
+    imageCount Int    @default(0)
 
     parent   Post?  @relation(name: "ParentPost", fields: [parentId], references: [id])
     parentId Int?

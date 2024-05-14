@@ -9,7 +9,7 @@ const PostPreview = (props: PostPreviewProps) => (
 			<Attachment {...props.attachment} />
 		</Link>
 		<p className="text-center text-xs">
-			R: <b>{props.replyCount || 0}</b> / I: <b>{props.imageCount || 0}</b>
+			R: <b>{props.replyCount}</b> / I: <b>{props.imageCount}</b>
 		</p>
 		<p className="break-all whitespace-normal text-center text-sm">
 			{props.content.slice(0, 150)}
