@@ -5,12 +5,15 @@ import Attachment from "./Attachment"
 
 const PostPreview = (props: PostPreviewProps) => (
 	<div>
-		<Attachment {...props.attachment} />
-		<div>
-			<p><Link href={`/${props.board}/${props.id}`}>{props.id}</Link></p>
-			<p>{props.createdAt.toDateString()}</p>
-		</div>
-		<p>{props.content}</p>
+		<Link href={`/${props.board}/${props.id}`}>
+			<Attachment {...props.attachment} />
+		</Link>
+		<p className="text-center text-xs">
+			R: <b>{props.replyCount || 0}</b> / I: <b>{props.imageCount || 0}</b>
+		</p>
+		<p className="break-all whitespace-normal text-center text-sm">
+			{props.content.slice(0, 150)}
+		</p>
 	</div>
 )
 

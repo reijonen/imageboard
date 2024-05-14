@@ -4,7 +4,10 @@ const Attachment = ({ name, attachmentTypeId }: AttachmentProps) => {
 	switch (attachmentTypeId) {
 		case AttachmentType.Image:
 			return (
-				<img src={`/attachments/${name}`} />
+				<img
+					src={`/attachments/${name}`}
+					className="object-contain"
+				/>
 			)
 		case AttachmentType.Video:
 			return (
@@ -14,9 +17,9 @@ const Attachment = ({ name, attachmentTypeId }: AttachmentProps) => {
 			)
 		case AttachmentType.Audio:
 			return (
-				<audio controls>
+				<video controls>
 					<source src={`/attachments/${name}`} />
-				</audio>
+				</video>
 			)
 	}
 }

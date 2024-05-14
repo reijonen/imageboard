@@ -22,29 +22,35 @@ const getBoard = cache(async (board: string) => {
 							attachmentTypeId: true
 						}
 					}
-				}
+				},
 			}
 		}
 	})
 })
 
-export default async function Board({ params }: BoardParams) {
+const Board = async ({ params }: BoardParams) => {
 	const board = await getBoard(params.board)
 	if (!board)
 		return notFound()
+
+	console.log("board:", board)
 
 	return (
 		<div>
 			<h1>{board.name}</h1>
 			<h2>{board.shorthand}</h2>
 			<PostForm board={board.shorthand} />
-			{board.posts.map((post) => (
-				<PostPreview
-					key={post.id}
-					board={board.shorthand}
-					{...post}
-				/>
-			))}
+			<div className="grid grid-cols-4 gap-4">
+				{board.posts.map((post) => (
+					<PostPreview
+						key={post.id}
+						board={board.shorthand}
+						{...post}
+					/>
+				))}
+			</div>
 		</div>
 	)
 }
+
+export default Board;
