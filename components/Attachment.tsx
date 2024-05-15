@@ -1,4 +1,4 @@
-import { AttachmentProps, AttachmentType } from "@/types.d"
+import { AttachmentProps, AttachmentType } from "@/types.d";
 
 const Attachment = ({ name, attachmentTypeId }: AttachmentProps) => {
 	switch (attachmentTypeId) {
@@ -6,22 +6,22 @@ const Attachment = ({ name, attachmentTypeId }: AttachmentProps) => {
 			return (
 				<img
 					src={`/attachments/${name}`}
-					className="object-contain"
+					className="max-w-[150px] max-h-[150px] m-auto"
 				/>
-			)
+			);
 		case AttachmentType.Video:
 			return (
 				<video controls>
 					<source src={`/attachments/${name}`} />
 				</video>
-			)
+			);
 		case AttachmentType.Audio:
 			return (
 				<video controls>
 					<source src={`/attachments/${name}`} />
 				</video>
-			)
+			);
 	}
-}
+};
 
-export default Attachment
+export default Attachment;

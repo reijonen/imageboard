@@ -38,3 +38,4 @@ next-env.d.ts
 
 public/attachments
 prisma/dev.db
+TODO.md

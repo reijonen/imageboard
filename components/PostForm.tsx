@@ -1,4 +1,4 @@
-import { PostFormProps } from "@/types.d"
+import { PostFormProps } from "@/types.d";
 
 const PostForm = ({ board, threadId }: PostFormProps) => (
 	<div className={"w-full max-w-xs m-auto " + (threadId ? "absolute right-0" : "")}>
@@ -54,6 +54,6 @@ const PostForm = ({ board, threadId }: PostFormProps) => (
 			</div>
 		</form>
 	</div>
-)
+);
 
-export default PostForm
+export default PostForm;

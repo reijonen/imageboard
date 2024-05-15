@@ -112,7 +112,6 @@ export async function POST(req: NextRequest) {
 
 	const redirectId = threadId ? threadId : post.id;
 
-
 	// TODO: relative or change url dev/prod
 	return NextResponse.redirect(`http://localhost:3000/${board}/${redirectId}`, 303)
 }

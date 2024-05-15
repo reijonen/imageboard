@@ -14,7 +14,7 @@ type PostProps = {
 	replies: PostProps[]
 }
 
-type PostPreviewProps = {
+type ThreadPreviewProps = {
 	board: string
 } & PostProps
 

@@ -1,8 +1,8 @@
 import { cache } from "react";
-import { notFound } from "next/navigation"
+import { notFound } from "next/navigation";
 
-import db from "../../db"
-import Post from "@/components/Post";
+import db from "../../db";
+import Thread from "@/components/Thread";
 import { ThreadParams } from "@/types.d";
 import PostForm from "@/components/PostForm";
 
@@ -19,15 +19,13 @@ const getThread = cache(async (threadId: number) => {
 				}
 			}
 		}
-	})
-})
+	});
+});
 
 export default async ({ params }: ThreadParams) => {
-	const thread = await getThread(Number(params.thread))
+	const thread = await getThread(Number(params.thread));
 	if (!thread)
-		return notFound()
-
-	console.log("thread:", thread)
+		return notFound();
 
 	return (
 		<div>
@@ -35,7 +33,7 @@ export default async ({ params }: ThreadParams) => {
 				board={params.board}
 				threadId={Number(params.thread)}
 			/>
-			<Post {...thread} />
+			<Thread {...thread} />
 		</div>
-	)
-}
+	);
+};
