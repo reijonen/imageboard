@@ -1,10 +1,9 @@
 import { cache } from "react";
 import { notFound } from "next/navigation";
-
 import db from "../../db";
-import Thread from "@/components/Thread";
 import { ThreadParams } from "@/types.d";
-import PostForm from "@/components/PostForm";
+import ThreadPage from "@/components/ThreadPage";
+import Link from "next/link";
 
 const getThread = cache(async (threadId: number) => {
 	return await db.post.findUnique({
@@ -28,12 +27,14 @@ export default async ({ params }: ThreadParams) => {
 		return notFound();
 
 	return (
-		<div>
-			<PostForm
-				board={params.board}
-				threadId={Number(params.thread)}
-			/>
-			<Thread {...thread} />
-		</div>
+		<>
+			<Link
+				href={`/${params.board}`}
+				className="text-amber-800 ml-8 mt-4 mb-4 block"
+			>
+				{"<-- Return"}
+			</Link>
+			<ThreadPage board={params.board} thread={thread} />
+		</>
 	);
 };

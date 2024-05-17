@@ -5,7 +5,7 @@ import Attachment from "./Attachment";
 
 const ThreadPreview = (props: ThreadPreviewProps) => (
 	<div className="max-w-[150px] max-h-[320px] overflow-hidden">
-		<Link href={`/${props.board}/${props.id}`} className="block mb-1">
+		<Link href={`/${props.board}/${props.id}`} className="block mb-1 pointer">
 			<Attachment {...props.attachment} />
 		</Link>
 		<p className="text-center text-xs">
