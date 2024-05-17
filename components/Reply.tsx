@@ -26,7 +26,7 @@ const Reply = ({ id, createdAt, content, attachment, setFormOpen }: PostProps) =
 				onClick={() => setShowImage(!showImage)}
 			/> : null}
 			<blockquote
-				className="inline-block text-sm mt-2 min-w-[300px]"
+				className="inline-block text-sm mt-2 min-w-[300px] break-all"
 			>
 				{content}
 			</blockquote>

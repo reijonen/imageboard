@@ -25,7 +25,7 @@ const Thread = ({ id, createdAt, content, attachment, replies, setFormOpen }: Po
 				<p className="mb-2 text-xs text-zinc-500">
 					{formatDate(createdAt)} <label className="hover:text-amber-800 cursor-pointer" onClick={() => setFormOpen(true)}>No. {id}</label>
 				</p>
-				<p className="text-sm">{content}</p>
+				<p className="text-sm break-all">{content}</p>
 			</div>
 
 			<div>
