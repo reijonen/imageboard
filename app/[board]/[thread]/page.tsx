@@ -30,7 +30,7 @@ export default async ({ params }: ThreadParams) => {
 		<>
 			<Link
 				href={`/${params.board}`}
-				className="text-amber-800 ml-8 mt-4 mb-4 block"
+				className="text-slate-800 ml-8 mt-4 mb-4 block"
 			>
 				{"<-- Return"}
 			</Link>

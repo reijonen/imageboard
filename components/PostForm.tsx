@@ -51,7 +51,7 @@ const PostForm = ({ board, threadId, isOpen }: PostFormProps) => {
 				<div className="flex justify-end">
 					<button
 						type="submit"
-						className="bg-amber-800 hover:bg-amber-700 text-white font-bold py-1 px-4 rounded focus:outline-none focus:shadow-outline"
+						className="bg-slate-800 hover:bg-slate-700 text-white font-bold py-1 px-4 rounded focus:outline-none focus:shadow-outline"
 					>
 						Post
 					</button>

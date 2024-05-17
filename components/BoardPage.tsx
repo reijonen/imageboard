@@ -8,14 +8,14 @@ const Board = ({ board }) => {
 
 	return (
 		<div>
-			<h1 className="text-amber-800 font-bold text-2xl ml-8 mt-4">
+			<h1 className="text-slate-800 font-bold text-2xl ml-8 mt-4">
 				{board.name}
 			</h1>
 			{!formOpen && (
 				<h3 className="text-xl m-2 text-center">
 					[<label
 						onClick={() => setFormOpen(true)}
-						className="text-amber-800 font-bold cursor-pointer">
+						className="text-slate-800 font-bold cursor-pointer">
 						Start a new Thread
 					</label>]
 				</h3>

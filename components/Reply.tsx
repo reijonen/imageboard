@@ -15,9 +15,9 @@ const Reply = ({ id, createdAt, content, attachment, setFormOpen }: PostProps) =
 	}, []);
 
 	return (
-		<div id={id.toString()} className={`${highlight ? "bg-amber-300" : "bg-amber-100"} table pl-4 pr-4 pt-2 pb-4 mt-2 border border-t-0 border-l-0 border-amber-200 first:mt-4`}>
+		<div id={id.toString()} className={`${highlight ? "bg-slate-300" : "bg-slate-100"} table pl-4 pr-4 pt-2 pb-4 mt-2 border border-t-0 border-l-0 border-slate-200 first:mt-4`}>
 			<p className="mb-2 text-xs text-zinc-500">
-				{formatDate(createdAt)} <label className="hover:text-amber-800 cursor-pointer" onClick={() => setFormOpen(true)}>No. {id}</label>
+				{formatDate(createdAt)} <label className="hover:text-slate-800 cursor-pointer" onClick={() => setFormOpen(true)}>No. {id}</label>
 			</p>
 
 			{attachment ? <img
