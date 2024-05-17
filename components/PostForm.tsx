@@ -26,20 +26,20 @@ const PostForm = ({ board, threadId, isOpen }: PostFormProps) => {
 						type="file"
 						id="file"
 						name="file"
-						accept=".png,.jpg,.mp4,.mp3"
+						accept=".png,.jpg"
 						className="appearance-none py-2 px-3 text-gray-700 leading-tight"
 					/>
 				</div>
 				<div className="mb-6">
 					<label
-						htmlFor="content"
+						htmlFor="comment"
 						className="block text-gray-700 text-sm font-bold mb-2"
 					>
 						Comment
 					</label>
 					<textarea
-						id="content"
-						name="content"
+						id="comment"
+						name="comment"
 						className="appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 						autoFocus
 					/>

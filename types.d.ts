@@ -11,32 +11,40 @@ type PostProps = {
 	replyCount: number | null,
 	imageCount: number | null,
 	attachment: AttachmentProps,
-	replies: PostProps[]
-}
+	replies: PostProps[];
+};
 
 type ThreadPreviewProps = {
-	board: string
-} & PostProps
+	board: string;
+} & PostProps;
 
 type BoardParams = {
 	params: {
-		board: string
-	}
-}
+		board: string;
+	};
+};
 
 type ThreadParams = {
 	params: {
-		board: string
-		thread: string
-	}
-}
+		board: string;
+		thread: string;
+	};
+};
 
 type AttachmentProps = {
 	name: string,
-	attachmentTypeId: number
-}
+	attachmentTypeId: number;
+};
 
 type PostFormProps = {
 	board: string,
-	threadId: number
+	threadId: number;
+};
+
+interface ErrorDetail {
+	code: string;
+	expected: string;
+	received: string;
+	path: string[];
+	message: string;
 }
