@@ -27,7 +27,7 @@ const PostForm = ({ board, threadId, isOpen }: PostFormProps) => {
 						id="file"
 						name="file"
 						accept=".png,.jpg"
-						className="appearance-none py-2 px-3 text-gray-700 leading-tight"
+						className="appearance-none py-2 px-3 text-gray-700 leading-tight w-full"
 					/>
 				</div>
 				<div className="mb-6">
