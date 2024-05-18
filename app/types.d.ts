@@ -11,7 +11,7 @@ type PostProps = {
 	replyCount: number | null,
 	imageCount: number | null,
 	attachment: AttachmentProps,
-	replies: PostProps[];
+	replies: PostProps[],
 };
 
 type ThreadPreviewProps = {
@@ -25,10 +25,8 @@ type BoardParams = {
 };
 
 type ThreadParams = {
-	params: {
-		board: string;
-		thread: string;
-	};
+	board: string;
+	thread: PostProps;
 };
 
 type AttachmentProps = {
@@ -38,13 +36,6 @@ type AttachmentProps = {
 
 type PostFormProps = {
 	board: string,
-	threadId: number;
+	threadId?: number,
+	isOpen: boolean;
 };
-
-interface ErrorDetail {
-	code: string;
-	expected: string;
-	received: string;
-	path: string[];
-	message: string;
-}

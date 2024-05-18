@@ -6,22 +6,26 @@ import ThreadPage from "@/components/ThreadPage";
 import Link from "next/link";
 
 const getThread = cache(async (threadId: number) => {
-	return await db.post.findUnique({
-		where: {
-			id: threadId
-		},
-		include: {
-			attachment: true,
-			replies: {
-				include: {
-					attachment: true
+	try {
+		return await db.post.findUnique({
+			where: {
+				id: threadId
+			},
+			include: {
+				attachment: true,
+				replies: {
+					include: {
+						attachment: true
+					}
 				}
 			}
-		}
-	});
+		});
+	} catch (e) {
+		return null;
+	}
 });
 
-export default async ({ params }: ThreadParams) => {
+export default async ({ params }: { params: ThreadParams; }) => {
 	const thread = await getThread(Number(params.thread));
 	if (!thread)
 		return notFound();
@@ -34,6 +38,7 @@ export default async ({ params }: ThreadParams) => {
 			>
 				{"<-- Return"}
 			</Link>
+			{/* @ts-ignore */}
 			<ThreadPage board={params.board} thread={thread} />
 		</>
 	);

@@ -1,6 +1,9 @@
 import { PostFormProps } from "@/types.d";
+import { useState } from "react";
 
 const PostForm = ({ board, threadId, isOpen }: PostFormProps) => {
+	const [isDisabled, setIsDisabled] = useState(false);
+
 	if (isOpen === false)
 		return null;
 
@@ -14,6 +17,7 @@ const PostForm = ({ board, threadId, isOpen }: PostFormProps) => {
 				action="/api/create-post"
 				encType="multipart/form-data"
 				className="bg-white border rounded px-8 pt-6 pb-8 mb-4 text-black"
+				onSubmit={() => setIsDisabled(true)}
 			>
 				<div className="mb-4">
 					<label
@@ -52,6 +56,7 @@ const PostForm = ({ board, threadId, isOpen }: PostFormProps) => {
 					<button
 						type="submit"
 						className="bg-slate-800 hover:bg-slate-700 text-white font-bold py-1 px-4 rounded focus:outline-none focus:shadow-outline"
+						disabled={isDisabled}
 					>
 						Post
 					</button>

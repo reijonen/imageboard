@@ -11,14 +11,18 @@ export const formatDate = (date: Date) => {
 	return dateStr.substring(0, idx);
 };
 
-const Thread = ({ id, createdAt, content, attachment, replies, setFormOpen }: PostProps) => {
+type ThreadProps = PostProps & {
+	setFormOpen: (isOpen: boolean) => void;
+};
+
+const Thread = ({ id, createdAt, content, attachment, replies, setFormOpen }: ThreadProps) => {
 	const [showImage, setShowImage] = useState(false);
 
 	return (
 		<div className="m-8 mt-0">
 			<div>
 				<img
-					src={`/attachments/${attachment.name}`}
+					src={`/api/public?file=${attachment.name}`}
 					className={`cursor-pointer ${showImage ? "mb-4" : "float-left mr-4 max-w-[200px] max-h-[2000px]"}`}
 					onClick={() => setShowImage(!showImage)}
 				/>

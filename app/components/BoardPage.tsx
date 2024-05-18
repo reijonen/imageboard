@@ -1,9 +1,18 @@
 "use client";
 import PostForm from "@/components/PostForm";
 import ThreadPreview from "@/components/ThreadPreview";
+import { PostProps } from "@/types";
 import { useState } from "react";
 
-const Board = ({ board }) => {
+type BoardProps = {
+	board: {
+		name: string,
+		shorthand: string,
+		posts: PostProps[];
+	};
+};
+
+const Board = ({ board }: BoardProps) => {
 	const [formOpen, setFormOpen] = useState(false);
 
 	return (

@@ -36,6 +36,7 @@ const Board = async ({ params }: BoardParams) => {
 		return notFound();
 
 	return (
+		// @ts-ignore
 		<BoardPage board={board} />
 	);
 };

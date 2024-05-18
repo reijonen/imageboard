@@ -5,20 +5,20 @@ const Attachment = ({ name, attachmentTypeId }: AttachmentProps) => {
 		case AttachmentType.Image:
 			return (
 				<img
-					src={`/attachments/${name}`}
+					src={`/api/public?file=${name}`}
 					className="max-w-[150px] max-h-[150px] m-auto"
 				/>
 			);
 		case AttachmentType.Video:
 			return (
 				<video controls>
-					<source src={`/attachments/${name}`} />
+					<source src={`/api/public?file=${name}`} />
 				</video>
 			);
 		case AttachmentType.Audio:
 			return (
 				<video controls>
-					<source src={`/attachments/${name}`} />
+					<source src={`/api/public?file=${name}`} />
 				</video>
 			);
 	}

@@ -3,14 +3,15 @@ import fs from "fs";
 import { pipeline } from "stream";
 import { promisify } from "util";
 import { zfd } from "zod-form-data";
-import { z } from "zod";
+import { ZodError, ZodIssue, z } from "zod";
+// @ts-ignore
 import { fileTypeFromFile } from 'file-type';
 import getConfig from "next/config";
 
 import db from "../../db";
 import parseMimeType from "@/utils/parseMimeType";
 import hashFile from "@/utils/hashFile";
-import { AttachmentType, ErrorDetail } from "@/types.d";
+import { AttachmentType } from "@/types.d";
 
 const { serverRuntimeConfig } = getConfig();
 const { mediaPath } = serverRuntimeConfig;
@@ -23,7 +24,9 @@ const schema = zfd.formData({
 	threadId: zfd.numeric().optional()
 });
 
-function formatErrorMessage(errors: ErrorDetail[]): string {
+// @ts-ignore
+function formatErrorMessage(errors): string {
+	// @ts-ignore
 	return errors.map(error => {
 		const path = error.path.join('.');
 		return `The "${path}" field is ${error.message.toLowerCase()} and must be a ${error.expected}.`;
@@ -38,6 +41,7 @@ export async function POST(req: NextRequest) {
 		let attachment = null;
 		if (file.size !== 0) {
 			const tmpFile = `/tmp/${file.name}`;
+			// @ts-ignore
 			await pump(file.stream(), fs.createWriteStream(tmpFile));
 
 			const fileHash = hashFile(tmpFile);
@@ -58,7 +62,8 @@ export async function POST(req: NextRequest) {
 				if (!fs.existsSync(mediaPath)) {
 					fs.mkdirSync(mediaPath);
 				}
-				fs.renameSync(tmpFile, permanentFile);
+				fs.copyFileSync(tmpFile, permanentFile);
+				fs.unlinkSync(tmpFile);
 			}
 
 			attachment = { attachmentType, fileName };
@@ -73,7 +78,6 @@ export async function POST(req: NextRequest) {
 
 		if (!threadId && attachment && (!content || content.length < 0))
 			return NextResponse.json({ error: "Post comment required" }, { status: 400 });
-
 
 		const post = await db.post.create({
 			data: {
@@ -123,13 +127,16 @@ export async function POST(req: NextRequest) {
 			});
 		}
 
+		const origin = process.env.NODE_ENV === "production" ? process.env.PROD_ORIGIN : process.env.DEV_ORIGIN;
 		const redirectId = threadId ? `${threadId}/#${post.id}` : post.id;
-
-		// TODO: relative or change url dev/prod
-		return NextResponse.redirect(`http://localhost:3000/${board}/${redirectId}`, 303);
+		return NextResponse.redirect(`${origin}/${board}/${redirectId}`, 303);
 	} catch (e) {
-		return NextResponse.json({
-			error: formatErrorMessage(e.issues)
-		}, { status: 400 });
+		if (e instanceof ZodError) {
+			return NextResponse.json({
+				error: formatErrorMessage(e.issues)
+			}, { status: 400 });
+		} else {
+			return NextResponse.error();
+		}
 	}
 }

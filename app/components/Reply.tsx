@@ -4,7 +4,11 @@ import { useEffect, useState } from "react";
 import { PostProps } from "@/types.d";
 import { formatDate } from "./Thread";
 
-const Reply = ({ id, createdAt, content, attachment, setFormOpen }: PostProps) => {
+type ReplyProps = PostProps & {
+	setFormOpen: (isOpen: boolean) => void;
+};
+
+const Reply = ({ id, createdAt, content, attachment, setFormOpen }: ReplyProps) => {
 	const [showImage, setShowImage] = useState(false);
 	const [highlight, setHighlight] = useState(false);
 
@@ -21,7 +25,7 @@ const Reply = ({ id, createdAt, content, attachment, setFormOpen }: PostProps) =
 			</p>
 
 			{attachment ? <img
-				src={`/attachments/${attachment.name}`}
+				src={`/api/public?file=${attachment.name}`}
 				className={`cursor-pointer ${showImage ? "" : "float-left mr-4 max-w-[125px] max-h-[125px]"}`}
 				onClick={() => setShowImage(!showImage)}
 			/> : null}
